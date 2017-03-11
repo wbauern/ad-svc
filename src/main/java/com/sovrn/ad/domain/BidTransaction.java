@@ -1,7 +1,5 @@
 package com.sovrn.ad.domain;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -15,17 +13,12 @@ import lombok.Value;
 @Builder
 @JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(builder = AdTransaction.AdTransactionBuilder.class)
-public class AdTransaction {
-	
-	int transactionId;
-	int userid;
-	List<BidTransaction> bids;
-	Double winningPrice;
-	int winningProvider;
-	ClickResult clickResult;
+@JsonDeserialize(builder = BidTransaction.BidBuilder.class)
+public class BidTransaction {
+	int providerId;
+	Double bidPrice;
 	
 	@JsonPOJOBuilder(withPrefix = "")
-	public static final class AdTransactionBuilder {
+	public static final class BidBuilder {
 	}
 }

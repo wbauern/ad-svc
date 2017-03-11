@@ -1,5 +1,6 @@
 package com.sovrn.ad.dal.entity;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -33,4 +34,14 @@ public class AdSize {
 	
 	@ManyToMany(mappedBy = "adSizes")
 	private Set<Provider> providers;
+	
+	@Override
+	public String toString() {
+	    return "AdSize [id=" + id + ", width=" + width + ", height=" + height + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+	    return Objects.hash(id, width, height);
+	}
 }

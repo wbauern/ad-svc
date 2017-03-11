@@ -1,5 +1,6 @@
 package com.sovrn.ad.dal.entity;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -41,4 +42,13 @@ public class User {
     	inverseJoinColumns = @JoinColumn(name = "provider_id", referencedColumnName = "provider_id"))
 	private Set<Provider> providers;
 
+	@Override
+	public String toString() {
+	    return "User [id=" + id + ", username=" + username + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+	    return Objects.hash(id, username);
+	}
 }

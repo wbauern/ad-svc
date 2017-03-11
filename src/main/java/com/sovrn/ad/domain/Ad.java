@@ -19,6 +19,6 @@ public class Ad {
 	String html;
 
 	@JsonPOJOBuilder(withPrefix = "")
-	public static final class ItemBuilder {
+	public static final class AdBuilder {
 	}
 }

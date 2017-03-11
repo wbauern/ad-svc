@@ -1,5 +1,6 @@
 package com.sovrn.ad.dal.entity;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -42,5 +43,13 @@ public class Provider {
 	@ManyToMany(mappedBy = "providers")
 	private Set<User> users;
 
+	@Override
+	public String toString() {
+	    return "Provider [id=" + id + ", name=" + name + ", url=" + url + "]";
+	}
 	
+	@Override
+	public int hashCode() {
+	    return Objects.hash(id, name, url);
+	}
 }
