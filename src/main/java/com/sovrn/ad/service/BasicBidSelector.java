@@ -1,25 +1,19 @@
 package com.sovrn.ad.service;
 
-import com.sovrn.ad.client.Bid;
+import java.util.Collections;
+import java.util.List;
 
-import rx.Observable;
+import com.sovrn.ad.domain.BidTransaction;
 
 /*
  * A bid selector that simply chooses the highest bid.
  */
 public class BasicBidSelector implements BidSelector {
 
-	// TODO: get working with empty observable
 	@Override
-	public Observable<Bid> selectBid(Observable<Bid> bids) {
-//		return Observable.empty();
-		return bids
-			.toSortedList(BasicBidSelector::compareBidPrice)
-			.flatMap(list -> Observable.from(list))
-			.last();	
+	public BidTransaction selectBid(List<BidTransaction> bids) {
+		Collections.sort(bids, (p1, p2) -> p1.getBidprice().compareTo(p2.getBidprice()));
+		return bids.get(bids.size()-1);
 	}
 
-	private static Integer compareBidPrice(Bid bid1, Bid bid2) {
-	    return bid1.getBidprice().compareTo(bid2.getBidprice());
-	  }
 }

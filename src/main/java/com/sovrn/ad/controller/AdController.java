@@ -47,7 +47,8 @@ public class AdController {
 		String userIp = httpServletRequest.getRemoteAddr();
 		String userAgent = httpServletRequest.getHeader("user-agent");
 		String domain = (new URL(url)).getHost();
-		Observable<Ad> adObs = adService.findWinningAd(width, height, userid, userIp, userAgent, domain);
+		Observable<Ad> adObs = adService.findAd(width, height, userid, userIp, userAgent, domain)
+				.map(at -> Ad.builder().tid(at.getTransactionId()).html(at.getWinningHtml()).build());
 		DeferredResult<Ad> dr = new DeferredResult<>(DEFERRED_TIMEOUT);
 		adObs.subscribe(ad -> { dr.setResult(ad); LOGGER.info("winning ad {}", ad); }, 
 				dr::setErrorResult, 
@@ -57,14 +58,14 @@ public class AdController {
 
 	@GetMapping(path="/click", produces="application/json")
 	public void clickEvent(
-			@RequestParam("tid") int tid,
+			@RequestParam("tid") String tid,
 			@RequestParam("userid") int userid) {
 		adService.click(tid, userid);
 	}
 
 	@GetMapping(path="/history", produces="application/json")
 	public List<AdTransaction> getHistory() {
-		return adService.getHistory();
+		return new ArrayList<AdTransaction>(adService.getHistory());
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
