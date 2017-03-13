@@ -27,7 +27,7 @@ public class AdServiceHelper {
 		} catch (MalformedURLException e) {
 			providerCmdKey = providerUrl;
 		}
-		HystrixCommandProperties.Setter commandProperties = HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(100);
+		HystrixCommandProperties.Setter commandProperties = HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(providerTimeoutMs);
 		Setter setter = Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ProviderCommands"))
 			      .andCommandKey(HystrixCommandKey.Factory.asKey(providerCmdKey)).andCommandPropertiesDefaults(commandProperties);
 		return new BidCmd(setter, restTemplate, providerUrl, width, height, userIp, userAgent, domain);

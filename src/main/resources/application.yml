@@ -1,4 +1,6 @@
-              
+server:
+  port: 80
+                    
 endpoints.beans.sensitive: false
 endpoints.mappings.sensitive: false
 endpoints.env.sensitive: false
