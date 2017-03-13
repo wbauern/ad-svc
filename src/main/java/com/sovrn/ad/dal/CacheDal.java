@@ -29,7 +29,7 @@ public class CacheDal {
   }
   
   public AdTransaction get(String transactionId) {
-    LOGGER.info("Getting Memento from cache: key {}", transactionId);
+    LOGGER.info("Getting AdTransaction from cache: key {}", transactionId);
     return cache.getIfPresent(transactionId);
   }
   
