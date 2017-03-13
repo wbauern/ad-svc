@@ -19,8 +19,8 @@ public interface ProviderRepository extends JpaRepository<Provider, Integer>{
 		"         ON p.provider_id = upa.provider_id" +
 		"       INNER JOIN provider_size_assoc psa" +
 		"         ON psa.provider_id = p.provider_id" +
-		"		INNER JOIN ad_size asz" +
-		"          ON asz.ad_size_id = psa.ad_size_id" +
+		"		    INNER JOIN ad_size asz" +
+		"         ON asz.ad_size_id = psa.ad_size_id" +
 		" WHERE  u.user_id = :userId" +
 		"	 and asz.width = :width" +
 		"    and asz.height = :height";

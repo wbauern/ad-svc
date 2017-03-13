@@ -4,19 +4,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import org.mockito.InjectMocks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
-import com.sovrn.ad.client.BidCmd;
 import com.sovrn.ad.dal.CacheDal;
 import com.sovrn.ad.dal.ProviderRepository;
 import com.sovrn.ad.dal.entity.Provider;
-import com.sovrn.ad.domain.Ad;
 import com.sovrn.ad.domain.AdTransaction;
 import com.sovrn.ad.domain.BidTransaction;
 import com.sovrn.ad.domain.ClickResult;
@@ -56,6 +54,9 @@ public class AdService {
 				.toList()
 				.toBlocking()
 				.single();
+		if (CollectionUtils.isEmpty(bids)) {
+			return Observable.empty();
+		}
 		
 		BidTransaction winningBid = bidSelector.selectBid(bids);
 		
@@ -73,7 +74,6 @@ public class AdService {
 		// Add adTransaction to history cache
 		cacheDal.put(adTransaction.getTransactionId(), adTransaction);
 		
-//		return Observable.just(Ad.builder().tid(adTransaction.getTransactionId()).html(adTransaction.getWinningHtml()).build());		
 		return Observable.just(adTransaction);		
 	}
 	
@@ -86,6 +86,8 @@ public class AdService {
 						.toObservable()
 						.subscribeOn(Schedulers.io())
 						.doOnNext(b -> LOGGER.info("bidprice {} : adhtml {}", b.getBidprice(), b.getAdhtml()))
+						.doOnError(t -> LOGGER.warn("Failed during provider request {}", p.getUrl(), t))
+						.onErrorResumeNext(e -> Observable.empty())
 						.map(b -> 
 							BidTransaction.builder().bidprice(b.getBidprice()).providerId(p.getId()).adHtml(b.getAdhtml()).build());
 			}, 10);

@@ -39,7 +39,7 @@ public class AdControllerTest {
 	  private ObjectMapper om = new ObjectMapper();
 
 	  @Test
-	  public void testSimpleGet() throws Exception {
+	  public void testGetAd() throws Exception {
 	    AdTransaction at = AdTransaction.builder().transactionId("ABC123").winningHtml("HTML").build();
 	    given(adService.findAd(100, 400, 1, "1.1.1.1", "agent", "foo.com")).willReturn(Observable.just(at));
 

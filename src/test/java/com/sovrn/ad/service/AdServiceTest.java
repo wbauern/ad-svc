@@ -24,6 +24,7 @@ import com.sovrn.ad.dal.ProviderRepository;
 import com.sovrn.ad.dal.entity.Provider;
 import com.sovrn.ad.domain.AdTransaction;
 import com.sovrn.ad.domain.BidTransaction;
+import com.sovrn.ad.domain.ClickResult;
 
 import rx.Observable;
 
@@ -69,9 +70,6 @@ public class AdServiceTest {
 
 		when(providerRepoMock.findUserProviders(111, 400, 100)).thenReturn(providerList);
 
-//		doReturn(bidCmdMock).when(adService).buildBidCmd(any(), any(), Matchers.eq(400), Matchers.eq(100), 
-//				Matchers.eq("1.1.1.1"), Matchers.eq("agent"), Matchers.eq("foo.com"));
-
 		when(adServiceHelperMock.buildBidCmd(any(), ArgumentMatchers.eq("url1"), ArgumentMatchers.eq(400), ArgumentMatchers.eq(100), 
 				ArgumentMatchers.eq("1.1.1.1"), ArgumentMatchers.eq("agent"), ArgumentMatchers.eq("foo.com"))).thenReturn(bidCmdMock);
 
@@ -103,9 +101,6 @@ public class AdServiceTest {
 
 		when(providerRepoMock.findUserProviders(111, 400, 100)).thenReturn(providerList);
 
-//		doReturn(bidCmdMock).when(adService).buildBidCmd(any(), any(), Matchers.eq(400), Matchers.eq(100), 
-//				Matchers.eq("1.1.1.1"), Matchers.eq("agent"), Matchers.eq("foo.com"));
-
 		when(adServiceHelperMock.buildBidCmd(any(), ArgumentMatchers.eq("url1"), ArgumentMatchers.eq(400), ArgumentMatchers.eq(100), 
 				ArgumentMatchers.eq("1.1.1.1"), ArgumentMatchers.eq("agent"), ArgumentMatchers.eq("foo.com"))).thenReturn(bidCmdMock);
 
@@ -126,4 +121,25 @@ public class AdServiceTest {
 		
 		verify(cacheDalMock).put(ArgumentMatchers.eq(result.getTransactionId()), ArgumentMatchers.any(AdTransaction.class));
 	}
+	
+	 @Test
+	 public void testClick() throws Exception {
+	   adService.clickLimit = 5;
+	   AdTransaction at = AdTransaction.builder().transactionId("ABC123").timestamp(System.currentTimeMillis()).build();
+	   when(cacheDalMock.get("ABC123")).thenReturn(at);
+	   adService.click("ABC123", 111);
+	   AdTransaction at2 = at.toBuilder().clickResult(ClickResult.CLICK).build();
+	   verify(cacheDalMock).put(ArgumentMatchers.eq("ABC123"), ArgumentMatchers.eq(at2));
+	 }
+	 
+   @Test
+   public void testClick_Stale() throws Exception {
+     adService.clickLimit = 1;
+     AdTransaction at = AdTransaction.builder().transactionId("ABC123").timestamp(System.currentTimeMillis()-1100).build();
+     when(cacheDalMock.get("ABC123")).thenReturn(at);
+     adService.click("ABC123", 111);
+     AdTransaction at2 = at.toBuilder().clickResult(ClickResult.STALE).build();
+     verify(cacheDalMock).put(ArgumentMatchers.eq("ABC123"), ArgumentMatchers.eq(at2));
+   }
+	
 }
