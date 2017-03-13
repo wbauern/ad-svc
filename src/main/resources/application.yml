@@ -1,5 +1,14 @@
+
+logging:
+  path: /tmp/logs
+
 server:
   port: 80
+  tomcat:
+    accesslog:
+      directory: /tmp/logs
+      enabled: true
+      pattern: common
                     
 endpoints.beans.sensitive: false
 endpoints.mappings.sensitive: false
